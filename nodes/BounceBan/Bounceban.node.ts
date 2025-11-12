@@ -108,6 +108,13 @@ export class Bounceban implements INodeType {
 						],
 						default: "0"
 					},
+					{
+						displayName: 'Webhook URL',
+						name: 'url',
+						type: 'string',
+						default: '',
+						description: 'A webhook target URL specified to receive verification result event in real-time through an HTTP POST request. In case of a failed webhook event delivery, the system will attempt to resend the event up to two additional times within a short interval. For those verifying a substantial volume of emails, it\'s crucial to ensure that your webhook server is equipped to manage the incoming traffic. Services such as ngrok have been known to encounter issues when dealing with a significant number of events due to inherent limitations. We suggest exploring alternative testing services like TypedWebhook Tools https://typedwebhook.tools/ for a more robust solution. Please note that we are not affiliated with this service.'
+					}
 				],
 			},
 		],
