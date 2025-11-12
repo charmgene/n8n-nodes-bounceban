@@ -3,7 +3,6 @@ import {
 	INodeExecutionData,
 	INodeType,
 	INodeTypeDescription,
-	NodeOperationError,
 	IHttpRequestMethods,
 	IHttpRequestOptions,
 	NodeConnectionType,
@@ -115,10 +114,10 @@ export class Bounceban implements INodeType {
 	};
 
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
+		await this.getCredentials('bouncebanApi');
 		const items = this.getInputData();
-		const returnData: INodeExecutionData[] = [];
 
-		const makeRequestWithRetry = async (options: IHttpRequestOptions, maxRetries = 30) => {
+		const makeRequestWithRetry = async (options: IHttpRequestOptions, maxRetries = 12) => {
 			let lastError;
 
 			for (let attempt = 0; attempt <= maxRetries; attempt++) {
@@ -144,20 +143,23 @@ export class Bounceban implements INodeType {
 			throw lastError;
 		};
 
-		for (let i = 0; i < items.length; i++) {
-			try {
-				const operation = this.getNodeParameter('operation', i) as string;
-				await this.getCredentials('bouncebanApi', i);
+		// 1. Create an array of promises (tasks to be done)
+		const promises = items.map(async (item, itemIndex) => {
+			const operation = this.getNodeParameter('operation', itemIndex) as string;
+			if (operation === 'validateEmail'){
+				const email = this.getNodeParameter('email', itemIndex) as string;
+				if (!email) {
+					return {
+						json: { ...item.json, bounceban_result: {error: "Email address is required"}},
+						pairedItem: { item: itemIndex }
+					};
+				}
+				let queries = {email};
+				const additionalFields = this.getNodeParameter('additionalFields', itemIndex) as Record<string, string>;
+				queries = {...queries, ...additionalFields};
+				this.logger.info(`start req verify[${itemIndex}]: ${JSON.stringify(queries)}`);
 
-				if (operation === 'validateEmail') {
-					const email = this.getNodeParameter('email', i) as string;
-					if (!email) {
-						throw new NodeOperationError(this.getNode(), 'Email address is required', {itemIndex: i});
-					}
-					let queries = {email};
-					const additionalFields = this.getNodeParameter('additionalFields', i) as Record<string, string>;
-					queries = {...queries, ...additionalFields};
-					this.logger.info(`start req verify api: ${JSON.stringify(queries)}`);
+				try {
 					const options: IHttpRequestOptions = {
 						method: 'GET' as IHttpRequestMethods,
 						url: 'https://api-waterfall.bounceban.com/v1/verify/single',
@@ -165,33 +167,27 @@ export class Bounceban implements INodeType {
 						json: true,
 						skipSslCertificateValidation: true,
 					};
-
-					const responseData = await makeRequestWithRetry(options);
-
-					returnData.push({
-						json: responseData,
-						pairedItem: {
-							item: i,
-						},
-					});
+					const verifyResult = await makeRequestWithRetry(options);
+					return {
+						json: { ...item.json, bounceban_result: verifyResult},
+						pairedItem: { item: itemIndex }
+					};
+				} catch (error) {
+					return {
+						json: { ...item.json, bounceban_result: {error: error.message}},
+						pairedItem: { item: itemIndex }
+					};
 				}
-
-			} catch (error) {
-				if (this.continueOnFail()) {
-					returnData.push({
-						json: {
-							error: error.message,
-						},
-						pairedItem: {
-							item: i,
-						},
-					});
-					continue;
-				}
-				throw error;
+			}else {
+				return {
+					json: { ...item.json, bounceban_result: {error: `Unknown operation: ${operation}`}},
+					pairedItem: { item: itemIndex }
+				};
 			}
-		}
-
-		return [returnData];
+		});
+		// 2. Wait for ALL promises to complete concurrently
+		const returnItems = await Promise.all(promises);
+		// 3. Return the processed items
+		return [returnItems];
 	}
 }
