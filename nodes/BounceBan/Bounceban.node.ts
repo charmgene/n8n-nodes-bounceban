@@ -8,8 +8,8 @@ import {
 	NodeConnectionType,
 } from 'n8n-workflow';
 
-const ApiBase = "https://dev.bounceban.com/api/v1"
-// const ApiBase = "https://api.bounceban.com/v1"
+// const ApiBase = "https://dev.bounceban.com/api/v1"
+const ApiBase = "https://api.bounceban.com/v1"
 
 export class Bounceban implements INodeType {
 	description: INodeTypeDescription = {

@@ -34,8 +34,8 @@ export class BounceBanApi implements ICredentialType {
     };
     test: ICredentialTestRequest = {
             request: {
-							baseURL: 'https://dev.bounceban.com/api',
-							// baseURL: 'https://api.bounceban.com',
+							// baseURL: 'https://dev.bounceban.com/api',
+							baseURL: 'https://api.bounceban.com',
 							url: '/v1/account',
 							method: 'GET',
 							headers: {

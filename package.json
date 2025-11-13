@@ -58,6 +58,5 @@
     "n8n-workflow": "*"
   },
   "dependencies": {
-    "fs-extra": "^11.3.2"
   }
 }
