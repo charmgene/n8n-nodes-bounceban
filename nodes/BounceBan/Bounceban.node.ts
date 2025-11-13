@@ -80,12 +80,12 @@ export class Bounceban implements INodeType {
 						type: 'options',
 						options: [
 							{
-								name: 'Regular',
+								name: 'regular',
 								value: 'regular',
 								description: "The default option for email verification. It does not assume that the domain of the email owner's current company website matches the domain of the email being verified.",
 							},
 							{
-								name: 'Deep Verify',
+								name: 'deepverify',
 								value: 'deepverify',
 								description: "DeepVerify operates on the assumption that the domain of the email owner's current company website matches the domain of the email being verified. This assumption can improve the success rate of verifying accept-all emails. However, it is crucial to obtain the domain for the email owner's current company website from a reliable source, such as the email owner's LinkedIn profile or another trustworthy sales prospecting database. Learn more: https://support.bounceban.com/article/what-is-deepverify",
 							},
@@ -97,16 +97,17 @@ export class Bounceban implements INodeType {
 						displayName: 'Disable Catchall Verify',
 						name: 'disable_catchall_verify',
 						type: 'options',
+						description: '(Optional) Defaults to 0. When set to 1, BounceBan performs only basic SMTP verification. This may leave catch-all emails or those protected by ESGs (Email Security Gateways) unverified. For these addresses, the API will return "result: \'unknown\', score: -1", and the credit cost is "0".',
 						options: [
 							{
-								name: 'Enable',
+								name: 'Enable catch-all verification (0)',
 								value: '0',
-								description: "The default option for email verification. It does not assume that the domain of the email owner's current company website matches the domain of the email being verified.",
+								description: "Enable catch-all verification. This is the recommended setting for most use cases.",
 							},
 							{
-								name: 'Disable',
+								name: 'Disable catch-all verification (1)',
 								value: '1',
-								description: 'BounceBan performs only basic SMTP verification. This may leave catch-all emails or those protected by ESGs (Email Security Gateways) unverified. For these addresses, the API will return "result: \'unknown\', score: -1", and the credit cost is "0".',
+								description: 'Disable catch-all verification. This may leave catch-all emails or those protected by ESGs (Email Security Gateways) unverified. For these addresses, the API will return "result: \'unknown\', score: -1", and the credit cost is "0". This is not recommended for most use cases.',
 							},
 						],
 						default: "0"
@@ -116,7 +117,7 @@ export class Bounceban implements INodeType {
 						name: 'url',
 						type: 'string',
 						default: '',
-						description: 'A webhook target URL specified to receive verification result event in real-time through an HTTP POST request. In case of a failed webhook event delivery, the system will attempt to resend the event up to two additional times within a short interval. For those verifying a substantial volume of emails, it\'s crucial to ensure that your webhook server is equipped to manage the incoming traffic. Services such as ngrok have been known to encounter issues when dealing with a significant number of events due to inherent limitations. We suggest exploring alternative testing services like TypedWebhook Tools https://typedwebhook.tools/ for a more robust solution. Please note that we are not affiliated with this service.'
+						description: 'A webhook target URL specified to receive verification result event in real-time through an HTTP POST request. In case of a failed webhook event delivery, the system will attempt to resend the event up to two additional times within a short interval. For those verifying a substantial volume of emails, it\'s crucial to ensure that your webhook server is equipped to manage the incoming traffic.'
 					}
 				],
 			},

@@ -5,8 +5,11 @@
   "keywords": [
     "n8n-community-node-package",
     "BounceBan",
-    "verify catch-all email",
-    "free email verification"
+    "verify email",
+    "email verification",
+    "find email",
+    "email validation",
+    "email verificaiton for resend sendgrid mailchimp"
   ],
   "license": "MIT",
   "homepage": "https://bounceban.com",

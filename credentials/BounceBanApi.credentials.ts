@@ -8,7 +8,7 @@ import {
 export class BounceBanApi implements ICredentialType {
 	name = 'bouncebanApi';
 	displayName = 'BounceBan API';
-	documentationUrl = 'https://bounceban.com/public/doc/api.html';
+	documentationUrl = 'https://bounceban.tawk.help/article/how-to-use-the-n8n-node';
 	properties: INodeProperties[] = [
 		{
 			displayName: 'API Key',

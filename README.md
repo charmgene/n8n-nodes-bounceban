@@ -30,9 +30,9 @@ npm install n8n-nodes-bounceban
 
 ### 1. Get Your API Key
 
-1. Visit [BounceBan](https://bounceban.com/app)
+1. Visit [BounceBan](https://bounceban.com/)
 2. Create your account
-3. Get your API key from the dashboard
+3. Get your API key from the [dashboard](https://bounceban.com/app/api/settings)
 
 ### 2. Configure Credentials
 
@@ -59,8 +59,9 @@ Verifies a single email address with detailed results.
 
 **Parameters:**
 - `email` (string, required): Email address to verify
-- `mode` (options): Verification mode - "regular" or "deepverify"
-- `disable_catchall_verify` (options): Enable/disable catch-all verification
+- `mode` (optional): Verification mode - "regular" or "deepverify"
+- `disable_catchall_verify` (optional): Enable/disable catch-all verification
+- `url ` (optional) push the verification result as a webhook event
 
 ## License
 
@@ -68,4 +69,4 @@ Verifies a single email address with detailed results.
 
 ---
 
-**Accurate Email Verification • Catch-all Specialization**
+**Email Verification • Catch-all email verification • email validation • email verificaiton for resend sendgrid mailchimp **
